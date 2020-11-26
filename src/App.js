@@ -32,8 +32,10 @@ class App extends Component {
          * You can also build your own extensions for any other middleware e.g. redux-observable
          */
         this.store = createStore({
-            enhancements: [offline(offlineConfig),applyMiddleware(createLogger({ collapsed: true, diff: true }))],
-            extensions: [getThunkExtension(), getSagaExtension()],
+            enhancements: [offline(offlineConfig)],
+            extensions: [getThunkExtension(), getSagaExtension(), {
+                middleware: [createLogger({ collapsed: true, diff: true })]
+              }],
             advancedComposeEnhancers: composeWithDevTools({
                 maxAge: 500,
             })
