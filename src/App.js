@@ -4,13 +4,17 @@ import React, { Component } from "react";
 // We will load the widgets async using react-loadable.
 import Loadable from "react-loadable";
 import { Provider } from "react-redux";
+import { createLogger } from 'redux-logger';
+import { composeWithDevTools } from "redux-devtools-extension";
 // createStore allows us to load/unload modules dynamically.
 import { createStore } from "redux-dynamic-modules-core";
+// import { moduleEnhancer } from "redux-dynamic-modules";
 // Saga extension allows us to use Saga middleware in the module store.
 import { getSagaExtension } from "redux-dynamic-modules-saga";
 // Thunk extension allows us to use Thunk middleware in the module store.
 import { getThunkExtension } from "redux-dynamic-modules-thunk";
 import "./App.css";
+import { applyMiddleware } from "redux";
 
 class App extends Component {
     constructor(props) {
@@ -28,8 +32,11 @@ class App extends Component {
          * You can also build your own extensions for any other middleware e.g. redux-observable
          */
         this.store = createStore({
-            enhancements: [offline(offlineConfig)],
+            enhancements: [offline(offlineConfig),applyMiddleware(createLogger({ collapsed: true, diff: true }))],
             extensions: [getThunkExtension(), getSagaExtension()],
+            advancedComposeEnhancers: composeWithDevTools({
+                maxAge: 500,
+            })
         });
     }
 
