@@ -14,24 +14,28 @@ export const storiesAvailable = items => {
 // thunk to fetch the stories
 export const fetchStories = () => {
     return (dispatch, getState) => {
-        fetchJson("https://hacker-news.firebaseio.com/v0/topstories.json").then(
-            ids => {
-                const top5 = ids.splice(0, 5);
-                const promises = [];
-                for (const id of top5) {
-                    promises.push(
-                        fetchJson(
-                            "https://hacker-news.firebaseio.com/v0/item/" +
-                                id +
-                                ".json"
-                        )
-                    );
+        const {appState} = getState();
+        const newsUrl = appState.appConfig ? appState.appConfig['hackerNewsUrl']: null;
+     
+            fetchJson(newsUrl).then(
+                ids => {
+                    const top5 = ids.splice(0, 5);
+                    const promises = [];
+                    for (const id of top5) {
+                        promises.push(
+                            fetchJson(
+                                "https://hacker-news.firebaseio.com/v0/item/" +
+                                    id +
+                                    ".json"
+                            )
+                        );
+                    }
+                    Promise.all(promises).then(stories => {
+                        dispatch(storiesAvailable(stories));
+                    });
                 }
-                Promise.all(promises).then(stories => {
-                    dispatch(storiesAvailable(stories));
-                });
-            }
-        );
+            );
+        
     };
 };
 

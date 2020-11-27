@@ -1,0 +1,4 @@
+{
+    "hackerNewsUrl": "https://hacker-news.firebaseio.com/v0/topstories.json",
+    "weatherUrl": "https://api.openweathermap.org/data/2.5/weather?q=Seattle&APPID=1362c34423375d167d694489b1c74080"
+  }

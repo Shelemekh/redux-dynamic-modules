@@ -5,6 +5,7 @@ export const weatherReducer = (state, action) => {
     return produce(state || {}, draft => {
         switch (action.type) {
             case WeatherLoaded: {
+                console.log('DYNAMIC REDUCER TRIGGERED');
                 draft.weather = action.payload;
                 break;
             }
