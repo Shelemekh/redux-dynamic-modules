@@ -50,11 +50,11 @@ class App extends Component {
         const {appLoadedInfoMessage} = this.props;
         appLoadedInfoMessage();
     }
-    
+ 
 
     render() {
         const {onWeatherToggled, onHackerNewsToggled} = this.props;
-        debugger;
+        
         return (
             <div className="App">
                 <h1>Widgets</h1>
