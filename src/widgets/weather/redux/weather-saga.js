@@ -1,5 +1,6 @@
 import { call, put,select } from "redux-saga/effects";
 import { weatherLoaded } from "./weather-actions";
+import {defaultLoaded} from '../../appinfo-dynamic/redux/appInfo-actions';
 
 
 const appConfig = (state)=> state.appState.appConfig;
@@ -18,4 +19,5 @@ function* loadWeatherData() {
     const json = yield call([response, response.json]);
 
     yield put(weatherLoaded(json));
+    yield put(defaultLoaded());
 }

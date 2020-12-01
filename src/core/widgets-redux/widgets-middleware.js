@@ -1,4 +1,4 @@
-import { CORE_APPLICATION_STARTED, appConfigRequested } from './widgets-actions';
+import { CORE_APPLICATION_STARTED, appConfigRequested } from '../widgets-redux/widgets-actions';
 
 
 export const widgetMiddleware = (store) => (next) => (action) => {

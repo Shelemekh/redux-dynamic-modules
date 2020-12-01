@@ -14,49 +14,56 @@ import { connect } from "react-redux";
 // // Thunk extension allows us to use Thunk middleware in the module store.
 // import { getThunkExtension } from "redux-dynamic-modules-thunk";
 // import {applyMiddleware} from 'redux';
-import {runApplication, onWeatherToggledAction, onHackerNewsToggledAction} from './widgets/widgets-redux/widgets-actions';
+import {runApplication, onWeatherToggledAction, onHackerNewsToggledAction} from './core/widgets-redux/widgets-actions';
+import {defaultLoaded} from './widgets/appinfo-dynamic/redux/appInfo-actions';
+import AppInfo from './core/app-info/App-info';
 import "./App.css";
 // import widgetMiddleware from './widgets/widgets-redux/widgets-middleware';
 // import widgetSaga from './widgets/widgets-redux/widgets-saga';
 // import {widgetReducer} from './widgets/widgets-redux/widgets-reducer';
 class App extends Component {
-    // constructor(props) {
-    //     super(props);
+    constructor(props) {
+        super(props);
 
-    //     // // define the initial state where none of the widgets are visible
-    //     // this.state = {
-    //     //     hackerNews: false,
-    //     //     weather: false,
-    //     // };
+        // // define the initial state where none of the widgets are visible
+        this.state = {
+            defaultAppInfo: true,
+        };
 
-    //     /**
-    //      * configure the store and load the thunk and saga extension
-    //      * The extensions are optional and you can choose extension based on the middleware you use
-    //      * You can also build your own extensions for any other middleware e.g. redux-observable
-    //      */
-    //     // this.store = createStore({
-    //     //     reducers:[widgetReducer],
-    //     //     enhancements: [offline(offlineConfig),applyMiddleware(widgetMiddleware)],
-    //     //     extensions: [getThunkExtension(), getSagaExtension(widgetSaga()), {
-    //     //         middleware: [createLogger({ collapsed: true, diff: true })]
-    //     //       }],
-    //     //     advancedComposeEnhancers: composeWithDevTools({
-    //     //         maxAge: 500,
-    //     //     })
-    //     // });
-    // }
+        /**
+         * configure the store and load the thunk and saga extension
+         * The extensions are optional and you can choose extension based on the middleware you use
+         * You can also build your own extensions for any other middleware e.g. redux-observable
+         */
+        // this.store = createStore({
+        //     reducers:[widgetReducer],
+        //     enhancements: [offline(offlineConfig),applyMiddleware(widgetMiddleware)],
+        //     extensions: [getThunkExtension(), getSagaExtension(widgetSaga()), {
+        //         middleware: [createLogger({ collapsed: true, diff: true })]
+        //       }],
+        //     advancedComposeEnhancers: composeWithDevTools({
+        //         maxAge: 500,
+        //     })
+        // });
+    }
 
     componentDidMount(){
         const {appLoadedInfoMessage} = this.props;
         appLoadedInfoMessage();
     }
- 
+ handleAppInfoChange = ()=>{
+    //  const {appInfoLoaded} = this.props;
+     const {defaultAppInfo} = this.state;
+     this.setState({defaultAppInfo:!defaultAppInfo})
+    //  appInfoLoaded();
+ }
 
     render() {
         const {onWeatherToggled, onHackerNewsToggled} = this.props;
-        
+     
         return (
             <div className="App">
+                <div role="button" onClick={()=> this.handleAppInfoChange()}>{this.getCustomAppInfo()}</div>           
                 <h1>Widgets</h1>
                 <div className="checkboxes">
                     <input
@@ -131,6 +138,19 @@ class App extends Component {
         this._weather = <LoadableWeather />;
         return this._weather;
     }
+
+    getCustomAppInfo() {
+        const {defaultAppInfo} = this.state;
+        const {appInfoLoaded} = this.props;     
+        
+       
+        const LoadableAppInfo = Loadable({
+            loader: () => import("./widgets/appinfo-dynamic"),
+            loading: ()  => <div>Loading Scripts...</div>,
+        });
+         
+        return defaultAppInfo ? <AppInfo/> : <LoadableAppInfo />;
+    }
 }
 
 const mapStateToProps = (state) => {
@@ -142,7 +162,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => ({
     appLoadedInfoMessage: () => dispatch(runApplication()),
     onWeatherToggled:() => dispatch(onWeatherToggledAction()),
-    onHackerNewsToggled: () => dispatch(onHackerNewsToggledAction())
+    onHackerNewsToggled: () => dispatch(onHackerNewsToggledAction()),
+    appInfoLoaded: ()=>dispatch(defaultLoaded())
   });
   
   export default connect(mapStateToProps, mapDispatchToProps)(App);
