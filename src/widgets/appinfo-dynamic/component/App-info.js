@@ -22,7 +22,7 @@ defaultLoaded();
 
 const mapStateToProps = (state) => {
     return {
-  appInfo: state.appInfo
+  appInfo: state.appInfom
     };
   };
 const mapDispatchToProps = (dispatch) => ({
